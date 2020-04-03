@@ -4,7 +4,7 @@ from flask import abort, jsonify, request, make_response
 
 from . import app, db
 from .models import Activity
-
+from . import service
 
 @app.route('/', methods=('GET',))
 def index():
@@ -12,15 +12,11 @@ def index():
 
 @app.route('/activities/<int:id>/like', methods=('PUT',))
 def activity_like(id):
-    act = Activity.query.get(id)
-    if(act == None):
+    found = service.activity_like(id)
+    if(not found):
         return make_response('', HTTPStatus.NOT_FOUND)
 
-    act.score = act.score+1
-    db.session.add(act)
-    db.session.commit()
     return make_response('', HTTPStatus.NO_CONTENT)
-
 
 @app.route('/activities', methods=('GET',))
 def activities_index():
@@ -29,7 +25,7 @@ def activities_index():
         {
             'description': activity.description,
             'id': activity.id,
-            'score' : activity.score
+            'score' : activity.score # TODO remove later
         }
         for activity in activities
     ])
