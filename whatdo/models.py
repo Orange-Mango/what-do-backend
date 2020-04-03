@@ -17,7 +17,8 @@ class Activity(db.Model):
     description = db.Column(db.String(150), nullable=False)
     tags = db.relationship(
         'Tag',
-        secondary=association_table
+        secondary=association_table,
+        back_populates='activities'
     )
 
 
@@ -29,5 +30,6 @@ class Tag(db.Model):
     name = db.Column(db.String(20), nullable=False)
     activities = db.relationship(
         'Activity',
-        secondary=association_table
+        secondary=association_table,
+        back_populates='tags'
     )
