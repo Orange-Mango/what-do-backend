@@ -16,6 +16,7 @@ def activities_index():
     return jsonify([
         {
             'description': activity.description,
+            'id': activity.id
         }
         for activity in activities
     ])
