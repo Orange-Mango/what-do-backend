@@ -8,6 +8,4 @@ app = Flask(__name__)
 def handle_http_exception(e):
     return jsonify(code=e.code, description=e.description), e.code
 
-@app.route('/', methods=('GET',))
-def index():
-    return jsonify('Hello, World!')
+import whatdo.views
