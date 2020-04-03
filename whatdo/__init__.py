@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask.app import HTTPException
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -14,5 +15,8 @@ def handle_http_exception(e):
 db = SQLAlchemy(app)
 import whatdo.models
 db.create_all()
+
+if app.config.get('CORS_ORIGINS'):
+    CORS(app)
 
 import whatdo.views
