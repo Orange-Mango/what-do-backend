@@ -10,13 +10,26 @@ from .models import Activity
 def index():
     return jsonify('Hello, World!')
 
+@app.route('/activities/<int:id>/like', methods=('PUT',))
+def activity_like(id):
+    act = Activity.query.get(id)
+    if(act == None):
+        return make_response('', HTTPStatus.NOT_FOUND)
+
+    act.score = act.score+1
+    db.session.add(act)
+    db.session.commit()
+    return make_response('', HTTPStatus.NO_CONTENT)
+
+
 @app.route('/activities', methods=('GET',))
 def activities_index():
     activities = Activity.query.all()
     return jsonify([
         {
             'description': activity.description,
-            'id': activity.id
+            'id': activity.id,
+            'score' : activity.score
         }
         for activity in activities
     ])
