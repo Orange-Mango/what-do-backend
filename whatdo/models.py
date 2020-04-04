@@ -1,11 +1,12 @@
 from datetime import datetime
 
-from . import app, db
+from . import db
 
-association_table = db.Table('association', db.Model.metadata,
+association_table = db.Table(  # pylint:disable=C0103
+    'association', db.Model.metadata,
     db.Column('activity_id', db.Integer, db.ForeignKey('activities.id')),
-    db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'))
-)
+    db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')))
+
 
 class Activity(db.Model):
     __tablename__ = 'activities'
@@ -23,7 +24,7 @@ class Activity(db.Model):
 
 
 class Tag(db.Model):
-    __tablename__= "tags"
+    __tablename__ = 'tags'
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, default=datetime.utcnow)
     changed = db.Column(db.DateTime, onupdate=datetime.utcnow)
