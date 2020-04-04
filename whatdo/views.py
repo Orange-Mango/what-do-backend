@@ -18,7 +18,10 @@ def activities_index():
         {
             'description': activity.description,
             'id': activity.id,
-            'tags':activity.tags
+            'tags':[
+                {'name': tag.name }
+                for tag in activity.tags
+                ]   
         }
         for activity in activities
     ])
@@ -30,11 +33,13 @@ def activities_create():
     data = request.json
     if set(data.keys()) != {'description','tags'}:
         abort(HTTPStatus.BAD_REQUEST)
-    activity = Activity(description=data['description'])
-    for n in data['tags']:
-        activity.tags.append(
-            Tag(name=n)
-        )
+    tags_list = []
+    for name in data['tags']:
+        if Tag.query.filter_by(name=name).first():
+                tags_list.append(Tag.query.filter_by(name=name).first())
+        else:
+            abort(HTTPStatus.BAD_REQUEST)
+    activity = Activity(description=data['description'],tags=tags_list)
     db.session.add(activity)
     db.session.commit()
     return make_response('', HTTPStatus.CREATED)
@@ -45,8 +50,10 @@ def tags_index():
     return jsonify([
         {
             'name': tag.name,
-            #'id': tag.id,
-            'activities': tag.activities
+            'activities': [
+                {'description': activity.description}
+                for activity in tag.activities
+                ]
         }
         for tag in tags
     ])
