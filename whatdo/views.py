@@ -23,7 +23,8 @@ def activity_like(act_id):
 @app.route('/activities', methods=('GET',))
 def activities_index():
     activities = Activity.query.all()
-    return activities_toJSON(activities)
+    return activities_to_json(activities)
+
 
 @app.route('/activities/ordered', methods=('GET',))
 def activities_ordered():
@@ -32,8 +33,7 @@ def activities_ordered():
         abort(HTTPStatus.BAD_REQUEST)
 
     activities = service.get_activities_ordered(exclude_activities)
-    return activities_toJSON(activities)
-    
+    return activities_to_json(activities)
 
 
 @app.route('/activities', methods=('POST',))
@@ -49,17 +49,17 @@ def activities_create():
     return make_response('', HTTPStatus.CREATED)
 
 
-def activities_toJSON(activities):
+def activities_to_json(activities):
     return jsonify([
-    {
-        'description': activity.description,
-        'id': activity.id,
-        'created': activity.created,
-        'score' : "{:.2f}".format(activity.score), # TODO remove later
-        'tags': [
-        { 'name': tag.name, 'id': tag.id, }
-        for tag in activity.tags
-        ]
-    }
-    for activity in activities
+        {
+            'description': activity.description,
+            'id': activity.id,
+            'created': activity.created,
+            'score': "{:.2f}".format(activity.score),  # TODO remove later
+            'tags': [
+                {'name': tag.name, 'id': tag.id, }
+                for tag in activity.tags
+            ]
+        }
+        for activity in activities
     ])
