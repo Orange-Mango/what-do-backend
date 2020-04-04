@@ -10,11 +10,15 @@ def activity_like(id):
         return False
 
     activity.likes += 1
-    today = datetime.utcnow() # Db saves in UTC. Could be changed in settings.cfg
-    activity.score += calculate_score(activity.created, today)
+    now = datetime.utcnow() # Db saves in UTC. Could be changed in settings.cfg
+
+    incrementScore = calculate_score(activity.created,now)
+    activity.score += incrementScore
 
     db.session.add(activity)
     db.session.commit()
+
+    print("Added {:.2f} score to activity {} ".format(incrementScore,id,id))
     return True
 
 def calculate_score(date, newerDate, weight=0.05):
