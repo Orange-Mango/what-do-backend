@@ -5,6 +5,7 @@ from sqlalchemy import desc
 from . import db
 from .models import Activity
 
+
 def activity_like(id):
     activity = Activity.query.get(id)
 
@@ -12,7 +13,7 @@ def activity_like(id):
         return False
 
     activity.likes += 1
-    now = datetime.utcnow() # Db saves in UTC. Could be changed in settings.cfg
+    now = datetime.utcnow()  # Db saves in UTC. Could be changed in settings.cfg
 
     increment_score = calculate_score(activity.created, now)
     activity.score += increment_score
@@ -22,6 +23,7 @@ def activity_like(id):
 
     print("Added {:.2f} score to activity {} ".format(increment_score, id))
     return True
+
 
 def calculate_score(date, later_date, weight=0.05):
     diff = later_date - date
