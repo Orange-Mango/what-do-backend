@@ -11,3 +11,4 @@ def activity_like(id):
     act.score = act.score+1
     db.session.add(act)
     db.session.commit()
+    return True
