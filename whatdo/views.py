@@ -3,8 +3,8 @@ from http import HTTPStatus
 from flask import abort, jsonify, request, make_response
 
 from . import app, db
-from .models import Activity
 from . import service
+from .models import Activity, Tag
 
 @app.route('/', methods=('GET',))
 def index():
@@ -22,12 +22,16 @@ def activity_like(id):
 def activities_index():
     activities = Activity.query.all()
     return jsonify([
-        {
-            'description': activity.description,
-            'id': activity.id,
-            'score' : activity.score # TODO remove later
-        }
-        for activity in activities
+    {
+        'description': activity.description,
+        'id': activity.id,
+        'score' : activity.score, # TODO remove later
+        'tags': [
+        { 'name': tag.name, 'id': tag.id, }
+        for tag in activity.tags
+        ]
+    }
+    for activity in activities
     ])
 
 @app.route('/activities', methods=('POST',))
