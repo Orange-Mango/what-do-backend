@@ -1,11 +1,12 @@
 
-from . import app, db
+from . import db
 from .models import Activity
 
-def activity_like(id):
-    act = Activity.query.get(id)
-    
-    if (act == None):
+
+def activity_like(act_id):
+    act = Activity.query.get(act_id)
+
+    if act is None:
         return False
 
     act.score = act.score+1
