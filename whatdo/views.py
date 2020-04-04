@@ -16,26 +16,24 @@ def index():
 def activity_like(act_id):
     found = service.activity_like(act_id)
     if not found:
-        return make_response('', HTTPStatus.NOT_FOUND)
+        abort(HTTPStatus.NOT_FOUND)
     return make_response('', HTTPStatus.NO_CONTENT)
 
 
 @app.route('/activities', methods=('GET',))
 def activities_index():
     activities = Activity.query.all()
-    return jsonify([
-    {
-        'description': activity.description,
-        'id': activity.id,
-        'created': activity.created,
-        'score' : "{:.2f}".format(activity.score), # TODO remove later
-        'tags': [
-        { 'name': tag.name, 'id': tag.id, }
-        for tag in activity.tags
-        ]
-    }
-    for activity in activities
-    ])
+    return activities_toJSON(activities)
+
+@app.route('/activities/ordered', methods=('GET',))
+def activities_ordered():
+    exclude_activities = request.args.getlist('not')
+    if not isinstance(exclude_activities, list):
+        abort(HTTPStatus.BAD_REQUEST)
+
+    activities = service.get_activities_ordered(exclude_activities)
+    return activities_toJSON(activities)
+    
 
 
 @app.route('/activities', methods=('POST',))
@@ -49,3 +47,19 @@ def activities_create():
     db.session.add(activity)
     db.session.commit()
     return make_response('', HTTPStatus.CREATED)
+
+
+def activities_toJSON(activities):
+    return jsonify([
+    {
+        'description': activity.description,
+        'id': activity.id,
+        'created': activity.created,
+        'score' : "{:.2f}".format(activity.score), # TODO remove later
+        'tags': [
+        { 'name': tag.name, 'id': tag.id, }
+        for tag in activity.tags
+        ]
+    }
+    for activity in activities
+    ])
