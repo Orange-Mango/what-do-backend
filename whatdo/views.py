@@ -24,16 +24,17 @@ def activity_like(act_id):
 def activities_index():
     activities = Activity.query.all()
     return jsonify([
-        {
-            'description': activity.description,
-            'id': activity.id,
-            'score': activity.score,  # TODO: remove later. this too -> # pylint:disable=W0511 # noqa:E501
-            'tags': [
-                {'name': tag.name, 'id': tag.id, }
-                for tag in activity.tags
-            ]
-        }
-        for activity in activities
+    {
+        'description': activity.description,
+        'id': activity.id,
+        'created': activity.created,
+        'score' : "{:.2f}".format(activity.score), # TODO remove later
+        'tags': [
+        { 'name': tag.name, 'id': tag.id, }
+        for tag in activity.tags
+        ]
+    }
+    for activity in activities
     ])
 
 
