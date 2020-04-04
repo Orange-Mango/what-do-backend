@@ -1,0 +1,23 @@
+[MASTER]
+
+load-plugins=
+  pylint_flask_sqlalchemy,
+
+[MESSAGES CONTROL]
+
+disable=
+  missing-class-docstring,
+  missing-function-docstring,
+  missing-module-docstring,
+  too-few-public-methods,
+  too-many-instance-attributes,
+
+[BASIC]
+
+good-names=
+  _,
+  ex,
+  i,
+  id,
+  j,
+  k,

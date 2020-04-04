@@ -3,6 +3,7 @@ from http import HTTPStatus
 from flask import abort, jsonify, request, make_response
 
 from . import app, db
+from . import service
 from .models import Activity
 from .models import Tag
 
@@ -11,20 +12,29 @@ from .models import Tag
 def index():
     return jsonify('Hello, World!')
 
+
+@app.route('/activities/<int:act_id>/like', methods=('PUT',))
+def activity_like(act_id):
+    found = service.activity_like(act_id)
+    if not found:
+        abort(HTTPStatus.NOT_FOUND)
+    return make_response('', HTTPStatus.NO_CONTENT)
+
+
 @app.route('/activities', methods=('GET',))
 def activities_index():
     activities = Activity.query.all()
-    return jsonify([
-        {
-            'description': activity.description,
-            'id': activity.id,
-            'tags':[
-                {'name': tag.name }
-                for tag in activity.tags
-                ]   
-        }
-        for activity in activities
-    ])
+    return activities_to_json(activities)
+
+
+@app.route('/activities/ordered', methods=('GET',))
+def activities_ordered():
+    exclude_activities = request.args.getlist('not')
+    if not isinstance(exclude_activities, list):
+        abort(HTTPStatus.BAD_REQUEST)
+
+    activities = service.get_activities_ordered(exclude_activities)
+    return activities_to_json(activities)
 
 @app.route('/activities', methods=('POST',))
 def activities_create():
@@ -69,3 +79,18 @@ def tags_create():
     db.session.add(tag)
     db.session.commit()
     return make_response('', HTTPStatus.CREATED)
+
+def activities_to_json(activities):
+    return jsonify([
+        {
+            'description': activity.description,
+            'id': activity.id,
+            'created': activity.created,
+            'score': "{:.2f}".format(activity.score),  # TODO remove later
+            'tags':[
+                {'name': tag.name }
+                for tag in activity.tags
+                ]   
+        }
+        for activity in activities
+    ])
