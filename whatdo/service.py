@@ -1,5 +1,5 @@
 
-from . import app, db
+from . import db
 from .models import Activity
 from datetime import datetime
 
