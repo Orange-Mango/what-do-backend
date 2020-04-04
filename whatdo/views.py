@@ -12,9 +12,9 @@ def index():
     return jsonify('Hello, World!')
 
 
-@app.route('/activities/<int:act_id>/like', methods=('PUT',))
-def activity_like(act_id):
-    found = service.activity_like(act_id)
+@app.route('/activities/<int:id>/like', methods=('PUT',))
+def activity_like(id):
+    found = service.activity_like(id)
     if not found:
         abort(HTTPStatus.NOT_FOUND)
     return make_response('', HTTPStatus.NO_CONTENT)
@@ -47,6 +47,16 @@ def activities_create():
     db.session.add(activity)
     db.session.commit()
     return make_response('', HTTPStatus.CREATED)
+
+
+@app.route("/activity/<int:id>", methods=('DELETE',))
+def activity_delete(id):
+    found = service.activity_delete(id)
+    if not found:
+        pass
+        abort(HTTPStatus.NOT_FOUND)
+
+    return make_response('', HTTPStatus.NO_CONTENT)
 
 
 def activities_to_json(activities):

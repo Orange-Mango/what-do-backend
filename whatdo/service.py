@@ -44,3 +44,12 @@ def get_activities_ordered(excludeActivities):
 
     activities = query.all()
     return activities
+
+
+def activity_delete(id):
+    activity = Activity.query.get(id)
+    if (activity is None):
+        return False
+    db.session.delete(activity)
+    db.session.commit()
+    return True
