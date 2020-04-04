@@ -4,19 +4,21 @@ from flask import abort, jsonify, request, make_response
 
 from . import app, db
 from . import service
-from .models import Activity, Tag
+from .models import Activity
+
 
 @app.route('/', methods=('GET',))
 def index():
     return jsonify('Hello, World!')
 
-@app.route('/activities/<int:id>/like', methods=('PUT',))
-def activity_like(id):
-    found = service.activity_like(id)
-    if(not found):
-        return make_response('', HTTPStatus.NOT_FOUND)
 
+@app.route('/activities/<int:act_id>/like', methods=('PUT',))
+def activity_like(act_id):
+    found = service.activity_like(act_id)
+    if not found:
+        return make_response('', HTTPStatus.NOT_FOUND)
     return make_response('', HTTPStatus.NO_CONTENT)
+
 
 @app.route('/activities', methods=('GET',))
 def activities_index():
@@ -34,6 +36,7 @@ def activities_index():
     }
     for activity in activities
     ])
+
 
 @app.route('/activities', methods=('POST',))
 def activities_create():

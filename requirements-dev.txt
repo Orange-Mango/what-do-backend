@@ -1,0 +1,6 @@
+-r requirements.txt
+bandit
+flake8
+flake8-quotes
+pylint
+pylint_flask_sqlalchemy
