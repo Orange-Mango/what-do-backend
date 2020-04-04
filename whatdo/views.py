@@ -25,6 +25,7 @@ def activities_index():
     {
         'description': activity.description,
         'id': activity.id,
+        'created': activity.created,
         'score' : activity.score, # TODO remove later
         'tags': [
         { 'name': tag.name, 'id': tag.id, }
