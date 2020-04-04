@@ -24,7 +24,10 @@ lint: venv
 	venv/bin/pylint whatdo || r=1;\
 	exit $$r
 
-check: lint test
+audit: venv
+	venv/bin/bandit -q -r whatdo
+
+check: lint audit test
 
 sdist: venv test
 	venv/bin/python setup.py sdist
