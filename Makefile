@@ -20,7 +20,9 @@ test: venv
 	venv/bin/python -m unittest discover -s tests
 
 lint: venv
-	venv/bin/pylint whatdo
+	venv/bin/flake8 whatdo || r=1;\
+	venv/bin/pylint whatdo || r=1;\
+	exit $$r
 
 check: lint test
 
