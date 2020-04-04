@@ -2,7 +2,7 @@ from . import service
 from datetime import datetime
 import unittest
 
-class ServiceTEst(unittest.TestCase):
+class ServiceTest(unittest.TestCase):
     def testCalculateScore(self):
         date = datetime(2020,4,4,2)
         newerDate = datetime(2020,4,4,4)
