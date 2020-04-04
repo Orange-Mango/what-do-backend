@@ -48,7 +48,7 @@ def activities_create():
         if Tag.query.filter_by(name=name).first():
                 tags_list.append(Tag.query.filter_by(name=name).first())
         else:
-            abort(HTTPStatus.BAD_REQUEST)
+            abort(HTTPStatus.BAD_REQUEST,description="Tag %s doesn't exist" % name)
     activity = Activity(description=data['description'],tags=tags_list)
     db.session.add(activity)
     db.session.commit()
