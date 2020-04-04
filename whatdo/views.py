@@ -1,10 +1,11 @@
 from http import HTTPStatus
 
-from flask import abort, jsonify, request, make_response
+from flask import abort, jsonify, request, session, make_response
 
 from . import app, db
 from . import service
-from .models import Activity
+from .auth import GoogleUser
+from .models import Activity, User
 
 
 @app.route('/', methods=('GET',))
@@ -48,3 +49,30 @@ def activities_create():
     db.session.add(activity)
     db.session.commit()
     return make_response('', HTTPStatus.CREATED)
+
+
+@app.route('/auth/login', methods=('POST',))
+def auth_login():
+    if not request.is_json:
+        abort(HTTPStatus.UNSUPPORTED_MEDIA_TYPE)
+    try:
+        google_user = GoogleUser.from_token(
+            (request.json or {}).get('idtoken'),
+            app.config['GOOGLE_CLIENT_ID'])
+    except ValueError:
+        abort(HTTPStatus.UNAUTHORIZED)
+    user = User.query.filter_by(google_id=google_user.id).first()
+    new_user = user is None
+    if new_user:
+        user = User(google_id=google_user.id, name=google_user.given_name)
+        db.session.add(user)
+        db.session.commit()
+    session['user_id'] = user.id
+    return (jsonify({'id': user.id, 'name': user.name}),
+            HTTPStatus.CREATED if new_user else HTTPStatus.OK)
+
+
+@app.route('/auth/logout', methods=('POST',))
+def auth_logout():
+    session.clear()
+    return '', HTTPStatus.NO_CONTENT

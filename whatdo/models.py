@@ -34,3 +34,12 @@ class Tag(db.Model):
         secondary=association_table,
         back_populates='tags'
     )
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
+    changed = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    google_id = db.Column(db.String(24))
+    name = db.Column(db.String(100))
