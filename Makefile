@@ -7,7 +7,7 @@ clean:
 
 venv: requirements-dev.txt requirements.txt
 	python3 -m venv venv &&\
-	venv/bin/pip install -r $< -e .
+	venv/bin/pip install -q -r $< -e .
 
 run: venv
 	FLASK_APP=whatdo \
